@@ -7,4 +7,6 @@ const app = express()
 app.use(express.json()); //when you send data from  frontend to backend, it will be converted into json
 app.use(cors());
 
+mongoose.connect("");
+
 app.listen(3001, () => console.log("SERVER STARTED!"));
