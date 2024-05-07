@@ -8,6 +8,15 @@ const router = express.Router()
 router.post("/register", async (req, res) => {
     const {username, password} = req.body;
     const user = await UserModel.findOne( { username: username } );
+
+    if(user){
+        return res.json({message: "User already exists!"});
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)  //encrypt the password
+
+    const newUser = new UserModel({username, password: hashedPassword});
+
     res.json(user);
 });
 
