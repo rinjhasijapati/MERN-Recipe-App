@@ -16,8 +16,9 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)  //encrypt the password
 
     const newUser = new UserModel({username, password: hashedPassword});
+    await newUser.save();
 
-    res.json(user);
+    res.json({message: "User Registered Successfully!"});
 });
 
 router.post("/login");
