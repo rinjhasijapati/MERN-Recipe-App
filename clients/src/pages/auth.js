@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {useCookies} from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const auth = () => {
   return (
@@ -12,18 +13,24 @@ const auth = () => {
 };
 
 const Login = () => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [_, setCookies] = useCookies(["access_token"]);
+
+  const navigate = useNavigate()
 
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", {
+      const response = await axios.post("http://localhost:3001/auth/login", {
         username,
         password,
       });
 
-      console.log()
+      setCookies("access_token", response.data.token);
+      window.localStorage.setItem("userId", response.data.userID);
+      navigate("/")  //navigates back to home page
     }catch (err) {
       console.error(err);
     }
@@ -41,13 +48,13 @@ const Login = () => {
 };
 
 const Register = () => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("http://localhost:3000/auth/register", { username, password });
+      await axios.post("http://localhost:3001/auth/register", { username, password });
       alert("Registration Completed! Login Now!")
     } catch (err) {
       console.error(err);
