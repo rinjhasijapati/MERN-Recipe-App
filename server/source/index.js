@@ -1,8 +1,9 @@
 import express from "express";
-import cors from 'cors'
-import mongoose from 'mongoose'
+import cors from 'cors';
+import mongoose from 'mongoose';
 
-import {userRouter} from './routes/users.js'
+import {userRouter} from './routes/users.js';
+import {recipesRouter} from './routes/recipes.js';
 
 const app = express()
 
@@ -10,6 +11,7 @@ app.use(express.json()); //when you send data from  frontend to backend, it will
 app.use(cors());
 
 app.use("/auth", userRouter);
+app.use("/recipes", recipesRouter);
 
 mongoose.connect(
     "mongodb+srv://rinjha:rinjhaS@recipes.g4mv85i.mongodb.net/recipes?retryWrites=true&w=majority&appName=recipes",
