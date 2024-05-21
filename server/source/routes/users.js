@@ -40,3 +40,16 @@ router.post("/login", async(req,res) => {
 });
 
 export {router as userRouter};
+
+//create a middleware to validate requests by creating tokens
+export const verifyToken = (req, res, next) => {
+    const token = req.header.authorization;
+    if(token) {
+        jwt.verify(token, "secret", (err) => {
+            if(err) return res.sendStatus(403);
+            next();   //if no errors then continue with the request
+        });
+    } else {
+        res.sendStatus(401);
+    }
+}

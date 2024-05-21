@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useGetUserID } from '../hooks/useGetUserID';
+import { useCookies } from "react-cookie";
 
 const home = () => {
   const [recipes, setRecipes] = useState([]);
   const [savedRecipes, setSavedRecipes] = useState([]);
+  const [cookies, _] = useCookies(["access_token"]);
 
   const userID = useGetUserID();
 
@@ -28,12 +30,13 @@ const home = () => {
     };
 
     fetchRecipe();
-    fetchSavedRecipe();
+
+    if (cookies.access_token) fetchSavedRecipe();
   }, []);
 
   const saveRecipe = async (recipeID) => {
     try {
-      const response = await axios.get("http://localhost:3001/recipes", { recipeID, userID });
+      const response = await axios.get("http://localhost:3001/recipes", { recipeID, userID }, { headers: { authorization: cookies.access_token } });
       setSavedRecipes(response.data.savedRecipes);
     } catch (err) {
       console.error(err);
@@ -51,8 +54,8 @@ const home = () => {
             {/* {savedRecipes.includes(recipe.id) && <h1>ALREADY SAVED</h1>} */}
             <div>
               <h2>{recipe.name}</h2>
-              <button 
-                onClick={() => saveRecipe(recipe._id)} 
+              <button
+                onClick={() => saveRecipe(recipe._id)}
                 disabled={isRecipeSaved(recipe._id)}
               >
                 {isRecipeSaved(recipe._id) ? "Saved" : "Save"}
